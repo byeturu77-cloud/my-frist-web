@@ -8,17 +8,25 @@ export default function NewPostPage() {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [titleError, setTitleError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setTitleError('');
 
-    if (!title.trim() || !content.trim()) {
-      alert('제목과 내용을 모두 입력해주세요.');
+    if (!title.trim()) {
+      setTitleError('제목을 1자 이상 입력해주세요.');
+      return;
+    }
+    
+    if (!content.trim()) {
+      alert('내용을 입력해주세요.');
       return;
     }
 
     // 백엔드 연동 전이므로 알림창만 띄웁니다.
-    alert('저장되었습니다');
+    // JSONPlaceholder는 임시 API라 실제 데이터 저장이 안되므로, UI 동작만 유지합니다.
+    alert('성공적으로 저장되었습니다!');
 
     // 작성 완료 후 요청하신 /posts 경로로 이동합니다.
     router.push('/posts');
@@ -27,8 +35,8 @@ export default function NewPostPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-12 flex flex-col gap-8">
       <header>
-        <Link href="/" className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
-          &larr; 홈으로 이동
+        <Link href="/posts" className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
+          &larr; 목록으로 이동
         </Link>
         <h1 className="text-3xl font-extrabold text-gray-900 mt-4 tracking-tight">
           새 글 작성
@@ -51,11 +59,24 @@ export default function NewPostPage() {
             id="title"
             name="title"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              if (e.target.value.trim() && titleError) {
+                setTitleError(''); // 값이 입력되면 에러 메시지 제거
+              }
+            }}
             placeholder="게시글의 제목을 입력하세요"
-            className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-sm sm:text-base"
-            required
+            className={`w-full rounded-lg border px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 transition-all text-sm sm:text-base ${
+              titleError 
+                ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' 
+                : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500/20'
+            }`}
           />
+          {titleError && (
+            <p className="text-sm text-red-500 font-medium animate-pulse">
+              ⚠️ {titleError}
+            </p>
+          )}
         </div>
 
         <div className="flex flex-col gap-2">
@@ -70,7 +91,6 @@ export default function NewPostPage() {
             onChange={(e) => setContent(e.target.value)}
             placeholder="게시글 내용을 작성하세요..."
             className="w-full resize-y rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-sm sm:text-base leading-relaxed"
-            required
           />
         </div>
 
