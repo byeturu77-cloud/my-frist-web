@@ -1,14 +1,26 @@
-# 프로젝트 규칙 및 지침 (Copilot Instructions)
+# 🤖 AI 코딩 어시스턴트(Copilot)를 위한 프로젝트 가이드라인
 
-## Tech Stack
-- **Next.js**: v16.2.1 (App Router ONLY)
-- **Tailwind CSS**: v4
+이 문서는 이 프로젝트에서 AI가 코드를 작성하거나 수정할 때 지켜야 할 핵심 규칙입니다.
+초보 개발자가 프로젝트를 관리하고 있으므로, 코드는 최대한 읽기 쉽고 직관적으로 작성해야 합니다.
 
-## Coding Conventions
-- **Server Component 우선**: 모든 컴포넌트는 Server Component를 기본으로 작성합니다. 클라이언트 상호작용이 필수적인 경우에만 파일 최상단에 `"use client"`를 명시하여 Client Component로 전환합니다.
-- **Tailwind CSS 전용**: 스타일링은 오직 Tailwind CSS만을 사용합니다. 외부 CSS 파일이나 styled-components 등은 사용하지 않습니다.
+## 1. Next.js App Router 사용 규칙 🚀
+- **최신 Next.js 규칙 따르기:** 이 프로젝트는 Next.js 15 이상을 기반으로 하며 `App Router(app/ 디렉토리)` 방식을 사용합니다. 구형 `Pages Router(pages/ 디렉토리)` 방식의 코드는 절대 작성하지 마세요.
+- **서버 컴포넌트 우선:** 기본적으로 모든 컴포넌트는 '서버 컴포넌트'로 작성합니다. 사용자 상호작용(클릭 등)이나 상태 관리(`useState`, `useEffect`)가 필요한 경우에만 파일 맨 위에 `"use client"`를 명시하여 클라이언트 컴포넌트로 만듭니다.
+- **올바른 라우터 사용:** 라우팅을 조작할 때는 옛날 방식인 `next/router`를 절대 사용하지 말고, 최신 방식인 `next/navigation`에서 제공하는 훅(`useRouter`, `usePathname` 등)을 사용하세요.
 
-## Known AI Mistakes (주의사항)
-- `next/router` 사용 **절대 금지**. 라우팅을 조작할 때는 반드시 `next/navigation`에서 제공하는 훅(`useRouter` 등)을 사용합니다.
-- **Pages Router 코드 생성 금지**. 과거의 `pages/` 디렉터리 기반 문법이나 패턴은 사용하지 않고, 오로지 최신 **App Router** (`app/`) 기준의 코드만 작성/수정합니다.
-- `params`나 `searchParams`를 다룰 때는 항상 비동기 처리를 가정하고 `await`를 사용해야 합니다. (Next.js 15+ App Router 변경 사항 대응)
+## 2. TypeScript와 Tailwind CSS 사용 규칙 🎨
+- **TypeScript (타입스크립트):**
+  - 데이터 타입을 알 수 없는 `any`는 가급적 사용하지 마세요. 
+  - 데이터의 형태를 나타낼 때는 `interface`나 `type`을 명확하게 정의해서 사용하세요.
+- **Tailwind CSS (스타일링):**
+  - 스타일링은 오직 Tailwind CSS만을 사용합니다. 외부 CSS 파일에 직접 스타일을 작성하거나 `styled-components` 등을 추가로 사용하지 않습니다.
+  - 가급적 유틸리티 클래스를 사용하여 직관적으로 꾸며주세요.
+
+## 3. shadcn/ui 컴포넌트 사용 규칙 🧩
+- **기존 컴포넌트 재사용:** 버튼, 입력창, 모달 같은 기본 UI 컴포넌트를 밑바닥부터 새로 만들지 마세요. 프로젝트에 이미 설치된 `shadcn/ui` 컴포넌트를 먼저 확인하고 가져다 쓰세요.
+- **경로 주의:** `shadcn/ui` 컴포넌트를 불러올 때는 `import { Button } from "@/components/ui/button"` 과 같이 `@/` 경로를 사용합니다.
+
+## 4. AI가 자주 틀릴 수 있는 주의사항 ⚠️ (필독)
+- **비동기 Params 처리 (Next.js 15+ 주의):** 페이지에서 `params`나 `searchParams`를 다룰 때는 항상 비동기(Promise) 처리를 가정하고 `await`를 사용해서 값을 꺼내야 합니다. (예: `const { id } = await params;`)
+- **과거 문법 주의:** 인터넷에 있는 옛날 React나 Next.js 코드를 그대로 가져오지 마세요. 항상 "이 코드가 최신 Next.js App Router 환경에 맞는 방식인가?"를 검증하세요.
+- **쉬운 코드 작성:** 초보자가 이해하기 어려운 너무 복잡한 패턴은 피하고, 한 줄 한 줄 직관적으로 이해할 수 있는 코드를 제안하세요.
