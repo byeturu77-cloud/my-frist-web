@@ -1,5 +1,9 @@
 # 블로그 프로젝트 전체 작업 체크리스트 (Ch8 ~ Ch12)
 
+## Version Policy
+- 교재 기준: Next.js 16.2.1, @supabase/supabase-js 2.47.12, @supabase/ssr 0.5.2
+- 현재 설치 기준: Next.js 16.2.1, @supabase/supabase-js ^2.105.1, @supabase/ssr ^0.10.2
+
 ## Chapter 8: Supabase 초기 설정 및 데이터 모델링
 - [ ] Supabase 프로젝트 생성 및 API 키 환경변수(`.env.local`) 설정
 - [ ] `profiles`, `posts` 테이블 생성 (SQL Editor 활용)
@@ -9,7 +13,7 @@
 - [ ] Supabase Auth 이메일/비밀번호 로그인 설정 활성화
 - [ ] 회원가입(`/signup`) 및 로그인(`/login`) 페이지 UI 구현
 - [ ] Auth 상태 관리를 위한 헬퍼 함수 작성 (`createClient`)
-- [ ] 인증된 사용자만 접근할 수 있는 보호된 라우트(Protected Route) 설정
+- [ ] `middleware.ts`를 사용한 인증된 사용자 전용 보호된 라우트(Protected Route) 설정
 
 ## Chapter 10: 데이터베이스 CRUD 연동
 - [ ] 글 작성(`/posts/new`): 폼 데이터를 Supabase `posts` 테이블에 INSERT

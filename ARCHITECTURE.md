@@ -2,8 +2,12 @@
 
 이 문서는 개인 블로그 프로젝트의 전체적인 구조와 흐름을 파악하기 위한 설계 문서입니다.
 
+## Version Policy
+- 교재 기준: Next.js 16.2.1, @supabase/supabase-js 2.47.12, @supabase/ssr 0.5.2
+- 현재 설치 기준: Next.js 16.2.1, @supabase/supabase-js ^2.105.1, @supabase/ssr ^0.10.2
+
 ## 1. 기술 스택 (Tech Stack) 🛠️
-- **프레임워크**: Next.js 16 (App Router)
+- **프레임워크**: Next.js 16.2.1 (App Router)
 - **스타일링**: Tailwind CSS
 - **UI 컴포넌트**: shadcn/ui
 - **데이터베이스 및 백엔드**: Supabase (PostgreSQL)
