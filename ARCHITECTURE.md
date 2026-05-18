@@ -21,8 +21,9 @@
 | :--- | :--- | :--- | :--- | :--- |
 | **홈 (포스트 목록)**| `/` | `app/page.tsx` | - | - 접속 시 바로 `/posts`로 자동 리다이렉트(`redirect`) |
 | **글 목록** | `/posts` | `app/posts/page.tsx` | `PostListView`, `SearchBar`, `Card` | **[Server]** Supabase에서 전체 글 조회 <br> **[Client]** 검색어 상태에 따른 필터링 렌더링 |
-| **글 상세** | `/posts/[id]` | `app/posts/[id]/page.tsx` | `Card`, `Button` | **[Server]** URL의 `id` 파라미터로 Supabase에서 단일 글 조회 |
-| **글 작성** | `/posts/new` | `app/posts/new/page.tsx` | `Input`, `Textarea`, `Button` | **[Client]** 사용자 입력 폼 처리 <br> **[Server/Action]** Supabase `posts` 테이블에 INSERT |
+| **글 상세** | `/posts/[id]` | `app/posts/[id]/page.tsx` | `Card`, `Button` | **[Client]** URL의 `id` 파라미터로 Supabase에서 단일 글 조회 (작성자 삭제 지원) |
+| **글 작성** | `/posts/new` | `app/posts/new/page.tsx` | `Input`, `Textarea`, `Button` | **[Client]** 사용자 입력 폼 처리 및 Supabase `posts` 테이블에 INSERT |
+| **글 수정** | `/posts/[id]/edit` | `app/posts/[id]/edit/page.tsx` | `Input`, `Textarea`, `Button` | **[Client]** 수정 폼 처리 및 Supabase `posts` 테이블에 UPDATE |
 | **마이페이지**| `/mypage` | `app/mypage/page.tsx` | `Card`, `Button` | **[Server]** 인증된 사용자의 본인 정보 및 작성 글 목록 조회 |
 | **로그인** | `/login` | `app/login/page.tsx` | `Input`, `Button` | **[Client/Action]** 이메일/비밀번호 검증 및 세션 생성 (Supabase Auth) |
 | **회원가입** | `/signup` | `app/signup/page.tsx` | `Input`, `Button` | **[Client/Action]** 신규 계정 등록 및 `Users` 테이블 연동 |
@@ -41,6 +42,10 @@
 2. 로그인 성공 후 상단 네비게이션의 "새 글 쓰기" 버튼 클릭 ➡️ **글 작성(`/posts/new`)** 폼으로 이동
 3. 폼에 제목과 내용을 작성하고 "발행" 버튼 클릭
 4. Supabase DB에 데이터가 성공적으로 저장되면, 방금 작성한 **글 상세(`/posts/[id]`)** 페이지로 자동 이동
+
+### 🛡️ 권한 및 보안 설계 원칙 (CRUD 연동 시)
+- **프론트엔드 (UX):** 수정 및 삭제 버튼은 사용자가 본인의 글을 볼 때만 화면에 표시되도록 조건부 렌더링(UX 최적화)합니다.
+- **백엔드 (보안):** 실제 글 수정/삭제의 강력한 권한 통제는 프론트엔드가 아닌 **데이터베이스 수준의 RLS(Row Level Security)** 정책을 통해 보장됩니다. (Ch11에서 구성)
 
 ---
 
@@ -75,6 +80,7 @@ Supabase Auth(`auth.users`) 시스템과 연결되어 화면에 표시될 사용
 - `id` (UUID, PK) : 사용자 고유 식별자 (`auth.users.id` 참조)
 - `username` (Text) : 화면에 표시될 사용자 닉네임/이름
 - `avatar_url` (Text) : 프로필 이미지 URL
+- `role` (Text) : 사용자 권한 (예: admin, user 등)
 - `created_at` (Timestamptz) : 프로필 생성 일시
 
 ### 5.2. Posts (포스트)

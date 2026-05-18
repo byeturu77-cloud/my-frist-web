@@ -1,9 +1,10 @@
 export type Post = {
-  id: number;
+  id: string;
   title: string;
   content: string;
   author: string;
   date: string;
+  user_id?: string;
 };
 
 export async function fetchPosts(): Promise<Post[]> {

@@ -24,3 +24,9 @@
 - Tailwind CSS와 shadcn/ui 기반으로만 작성한다. 
 - 커스텀 CSS 파일 생성 금지 (전역 CSS 제외).
 - `any` 타입 사용 금지. 명확한 TypeScript 타입을 정의할 것.
+
+## 4. 데이터베이스 CRUD 연동 (Chapter 10) 규칙
+- 데이터베이스 연동 시 Ch8에서 작성한 `lib/supabase/client.ts`를 활용한다.
+- 인증 상태 관리는 Ch9에서 작성한 `useAuth/AuthProvider`를 사용한다.
+- `posts` 컬럼명 등은 Ch8에서 구성한 스키마 구조를 그대로 사용한다.
+- UI 상의 수정/삭제 기능은 프론트엔드 관점(UX)에서 구현하며, 실제 데이터베이스 레벨의 권한 제어 및 보안 처리는 Chapter 11의 RLS(Row Level Security)에서 담당함을 유의한다.

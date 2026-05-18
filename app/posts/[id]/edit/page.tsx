@@ -1,112 +1,139 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
-import { createClient } from '@/lib/supabase/client';
+import { use, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
+import { createClient } from "@/lib/supabase/client";
+import { Button } from "@/components/ui/button";
 
-export default function NewPostPage() {
+export default function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const router = useRouter();
-  const { user, loading } = useAuth();
-  
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [titleError, setTitleError] = useState('');
-  const [submitError, setSubmitError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user, loading: authLoading } = useAuth();
 
-  // 미로그인 사용자 리다이렉트 (미들웨어가 보호하지만 클라이언트 측 보완 가드 제공)
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [postAuthorId, setPostAuthorId] = useState("");
+  const [loadingPost, setLoadingPost] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [titleError, setTitleError] = useState("");
+
+  // 1. 게시글 데이터 불러오기
   useEffect(() => {
-    if (!loading && !user) {
-      alert('로그인이 필요한 페이지입니다.');
-      router.push('/login');
+    async function fetchPost() {
+      try {
+        const supabase = createClient();
+        const { data, error: fetchError } = await supabase
+          .from("posts")
+          .select("id, title, content, user_id")
+          .eq("id", id)
+          .single();
+
+        if (fetchError) throw fetchError;
+
+        if (data) {
+          setTitle(data.title);
+          setContent(data.content);
+          setPostAuthorId(data.user_id);
+        }
+      } catch (err: any) {
+        setError(err.message || "게시글 정보를 불러오지 못했습니다.");
+      } finally {
+        setLoadingPost(false);
+      }
     }
-  }, [user, loading, router]);
+
+    fetchPost();
+  }, [id]);
+
+  // 2. 작성자 및 권한 UX 분기 검증
+  useEffect(() => {
+    if (!authLoading && !loadingPost) {
+      if (!user) {
+        alert("로그인이 필요한 서비스입니다.");
+        router.push("/login");
+      } else if (postAuthorId && user.id !== postAuthorId) {
+        alert("본인이 작성한 글만 수정할 수 있습니다.");
+        router.push(`/posts/${id}`);
+      }
+    }
+  }, [user, authLoading, loadingPost, postAuthorId, id, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setTitleError('');
-    setSubmitError('');
+    setTitleError("");
+    setError(null);
 
     if (!title.trim()) {
-      setTitleError('제목을 1자 이상 입력해주세요.');
-      return;
-    }
-    
-    if (!content.trim()) {
-      alert('내용을 입력해주세요.');
+      setTitleError("제목을 1자 이상 입력해주세요.");
       return;
     }
 
-    if (!user) {
-      alert('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
-      router.push('/login');
+    if (!content.trim()) {
+      alert("내용을 입력해주세요.");
       return;
     }
 
     setIsSubmitting(true);
     try {
       const supabase = createClient();
-      const { data, error } = await supabase
-        .from('posts')
-        .insert({
+      const { error: updateError } = await supabase
+        .from("posts")
+        .update({
           title,
           content,
-          user_id: user.id
         })
-        .select('id')
-        .single();
+        .eq("id", id); // UPDATE 조건 명시
 
-      if (error) throw error;
+      if (updateError) throw updateError;
 
-      alert('성공적으로 저장되었습니다!');
-      
-      if (data?.id) {
-        router.push(`/posts/${data.id}`);
-      } else {
-        router.push('/posts');
-      }
+      alert("게시글이 성공적으로 수정되었습니다!");
+      router.push(`/posts/${id}`);
     } catch (err: any) {
-      setSubmitError(err.message || '게시글 저장에 실패했습니다.');
+      setError(err.message || "게시글 수정에 실패했습니다.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (loading) {
+  if (authLoading || loadingPost) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-24 text-center text-gray-500 font-medium">
-        인증 상태를 확인하고 있습니다...
+        데이터를 로딩하고 있습니다...
       </div>
     );
   }
 
-  if (!user) {
-    return null; // 리다이렉트 처리 중이므로 깜빡임 방지용 빈 화면 반환
+  // 본인이 작성한 글이 아니거나 권한이 없는 경우 깜빡임 방지
+  if (!user || user.id !== postAuthorId) {
+    return null;
   }
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12 flex flex-col gap-8">
       <header>
-        <Link href="/posts" className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
-          &larr; 목록으로 이동
+        <Link href={`/posts/${id}`} className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
+          &larr; 게시글 상세로 이동
         </Link>
-        <h1 className="text-3xl font-extrabold text-gray-900 mt-4 tracking-tight">
-          새 글 작성
-        </h1>
-        <p className="text-gray-500 mt-2">
-          새로운 블로그 게시글을 작성해보세요.
-        </p>
+        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between mt-4 gap-2">
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+            게시글 수정
+          </h1>
+          <span className="text-xs text-red-500 font-medium sm:text-right">
+            * 이 화면의 수정 권한 분기(UX)와는 별개로, 실제 데이터 임의 조작 방지는 Ch11 RLS가 담당합니다.
+          </span>
+        </div>
       </header>
 
       <form 
         onSubmit={handleSubmit} 
         className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sm:p-8 flex flex-col gap-6"
       >
-        {submitError && (
+        {error && (
           <div className="p-4 bg-red-50 text-red-600 rounded-lg text-sm font-medium border border-red-100">
-            ⚠️ {submitError}
+            ⚠️ {error}
           </div>
         )}
 
@@ -122,7 +149,7 @@ export default function NewPostPage() {
             onChange={(e) => {
               setTitle(e.target.value);
               if (e.target.value.trim() && titleError) {
-                setTitleError('');
+                setTitleError("");
               }
             }}
             placeholder="게시글의 제목을 입력하세요"
@@ -170,7 +197,7 @@ export default function NewPostPage() {
             disabled={isSubmitting}
             className="px-6 py-2.5 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 shadow-sm focus:ring-2 focus:ring-blue-500/50 focus:outline-none transition-all disabled:bg-blue-400 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? '저장 중...' : '저장하기'}
+            {isSubmitting ? '수정 중...' : '수정하기'}
           </button>
         </div>
       </form>

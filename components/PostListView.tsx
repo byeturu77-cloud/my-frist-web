@@ -15,7 +15,7 @@ export default function PostListView({ initialPosts }: { initialPosts: Post[] })
     post.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleDelete = (e: React.MouseEvent, id: number) => {
+  const handleDelete = (e: React.MouseEvent, id: string) => {
     e.preventDefault(); // Link 이벤트 전파 방지
     if (window.confirm('정말 이 게시글을 삭제하시겠습니까?')) {
       setPosts(prevPosts => prevPosts.filter(p => p.id !== id));
