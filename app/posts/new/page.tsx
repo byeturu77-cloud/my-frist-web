@@ -13,6 +13,7 @@ export default function NewPostPage() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [titleError, setTitleError] = useState('');
+  const [contentError, setContentError] = useState('');
   const [submitError, setSubmitError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -27,17 +28,22 @@ export default function NewPostPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setTitleError('');
+    setContentError('');
     setSubmitError('');
 
-    if (!title.trim()) {
-      setTitleError('제목을 1자 이상 입력해주세요.');
-      return;
+    let isValid = true;
+
+    if (title.trim().length < 2) {
+      setTitleError('제목을 2자 이상 입력해주세요.');
+      isValid = false;
     }
     
-    if (!content.trim()) {
-      alert('내용을 입력해주세요.');
-      return;
+    if (content.trim().length < 10) {
+      setContentError('내용을 10자 이상 입력해주세요.');
+      isValid = false;
     }
+
+    if (!isValid) return;
 
     if (!user) {
       alert('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
@@ -68,7 +74,8 @@ export default function NewPostPage() {
         router.push('/posts');
       }
     } catch (err: any) {
-      setSubmitError(err.message || '게시글 저장에 실패했습니다.');
+      console.error("게시글 저장 오류:", err);
+      setSubmitError('일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
     } finally {
       setIsSubmitting(false);
     }
@@ -121,7 +128,7 @@ export default function NewPostPage() {
             value={title}
             onChange={(e) => {
               setTitle(e.target.value);
-              if (e.target.value.trim() && titleError) {
+              if (e.target.value.trim().length >= 2 && titleError) {
                 setTitleError('');
               }
             }}
@@ -149,11 +156,25 @@ export default function NewPostPage() {
             name="content"
             rows={12}
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={(e) => {
+              setContent(e.target.value);
+              if (e.target.value.trim().length >= 10 && contentError) {
+                setContentError('');
+              }
+            }}
             placeholder="게시글 내용을 작성하세요..."
             disabled={isSubmitting}
-            className="w-full resize-y rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-sm sm:text-base leading-relaxed"
+            className={`w-full resize-y rounded-lg border px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 transition-all text-sm sm:text-base leading-relaxed ${
+              contentError 
+                ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' 
+                : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500/20'
+            }`}
           />
+          {contentError && (
+            <p className="text-sm text-red-500 font-medium animate-pulse">
+              ⚠️ {contentError}
+            </p>
+          )}
         </div>
 
         <div className="pt-4 flex items-center justify-end gap-3 border-t border-gray-100">

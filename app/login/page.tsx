@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signInWithEmail } from "@/lib/auth";
+import { getErrorMessage } from "@/lib/error-message";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import Link from "next/link";
@@ -22,13 +23,12 @@ export default function LoginPage() {
     try {
       const { data, error: signInError } = await signInWithEmail(email, password);
 
-      if (signInError) {
-        setError(signInError.message);
-      } else {
-        router.push("/posts");
-      }
+      if (signInError) throw signInError;
+      
+      router.push("/posts");
     } catch (err: any) {
-      setError("로그인 중 예상치 못한 오류가 발생했습니다.");
+      console.error("로그인 에러:", err);
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

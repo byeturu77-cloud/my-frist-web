@@ -1,11 +1,11 @@
 import Link from "next/link";
 import PostListView from "@/components/PostListView";
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/server";
 import { Post } from "@/lib/posts";
 
 export default async function PostsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("posts")
     .select(`

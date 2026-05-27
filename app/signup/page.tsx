@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signUpWithEmail } from "@/lib/auth";
+import { getErrorMessage } from "@/lib/error-message";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import Link from "next/link";
@@ -24,17 +25,16 @@ export default function SignUpPage() {
     try {
       const { data, error: signUpError } = await signUpWithEmail(email, password, name);
 
-      if (signUpError) {
-        setError(signUpError.message);
-      } else {
-        setSuccess(true);
-        // 2초 후 로그인 페이지로 자동 이동
-        setTimeout(() => {
-          router.push("/login");
-        }, 2000);
-      }
+      if (signUpError) throw signUpError;
+      
+      setSuccess(true);
+      // 2초 후 로그인 페이지로 자동 이동
+      setTimeout(() => {
+        router.push("/login");
+      }, 2000);
     } catch (err: any) {
-      setError("회원가입 중 예상치 못한 오류가 발생했습니다.");
+      console.error("회원가입 에러:", err);
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

@@ -1,38 +1,10 @@
-AGENT.md를 참조한다.
-## Tech Stack
+Copilot Chat을 **Agent 모드**로 전환하고 다음 프롬프트를 입력한다:
 
-- Next.js 16.2.1 (App Router only)
-- React 19.2.4
-- Tailwind CSS 4
-- shadcn/ui (components/ui/ 경로에 설치됨)
-
-## Coding Conventions
-
-- Default to Server Components unless a Client Component is required.
-- Use Tailwind CSS for styling.
-- Keep components simple and easy to verify.
-- Prefer files inside `app/` for routes.
-
-## Design Tokens
-
-- Primary color: shadcn/ui --primary
-- Background: --background
-- Card: shadcn/ui Card 컴포넌트 사용 (rounded-lg shadow-sm)
-- Spacing: 컨텐츠 간격 space-y-6, 카드 내부 p-6
-- Max width: max-w-4xl mx-auto (메인 컨텐츠)
-- 반응형: md 이상 2열 그리드, 모바일 1열
-
-## Component Rules
-
-- UI 컴포넌트는 shadcn/ui 사용 (components/ui/)
-- Button, Card, Input, Dialog 등 shadcn/ui 컴포넌트 우선
-- 커스텀 컴포넌트는 components/ 루트에 배치
-- Tailwind 기본 컬러 직접 사용 금지 → CSS 변수(디자인 토큰) 사용
- 
-## Known AI Mistakes
- 
-- Do not use `next/router`; use `next/navigation` when navigation is needed.
-- Do not create `pages/` router files; this project uses the App Router.
-- Do not add `"use client"` unless interactivity or browser APIs are actually needed.
-- Do not rename or change 'posts' and 'profiles' database column names; always adhere strictly to Ch8 schema.
-- Never expose or use the Supabase 'service_role' key on the client side.
+> ".github/copilot-instructions.md 파일을 만들어줘.
+> 
+> 
+> 내용:
+> 
+> - Tech Stack: package.json에서 확인한 Next.js, Tailwind CSS 버전 명시 (App Router ONLY)
+> - Coding Conventions: Server Component 기본, Tailwind CSS만 사용
+> - Known AI Mistakes: next/router 금지(next/navigation 사용), Pages Router 금지, params는 await 필수"

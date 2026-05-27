@@ -43,9 +43,32 @@
 3. 폼에 제목과 내용을 작성하고 "발행" 버튼 클릭
 4. Supabase DB에 데이터가 성공적으로 저장되면, 방금 작성한 **글 상세(`/posts/[id]`)** 페이지로 자동 이동
 
-### 🛡️ 권한 및 보안 설계 원칙 (CRUD 연동 시)
-- **프론트엔드 (UX):** 수정 및 삭제 버튼은 사용자가 본인의 글을 볼 때만 화면에 표시되도록 조건부 렌더링(UX 최적화)합니다.
-- **백엔드 (보안):** 실제 글 수정/삭제의 강력한 권한 통제는 프론트엔드가 아닌 **데이터베이스 수준의 RLS(Row Level Security)** 정책을 통해 보장됩니다. (Ch11에서 구성)
+### 🛡️ 권한 및 보안 설계 원칙 (Chapter 11 RLS 기준)
+- **보안 계층의 분리:**
+  - **UI 분기 (UX):** 클라이언트 단에서 본인 글에만 수정/삭제 버튼을 노출하는 것은 사용자 경험(UX) 개선일 뿐, 결코 실제 보안 수단이 아닙니다.
+  - **RLS (DB 보안):** 악의적인 API 호출이나 변조로부터 데이터를 보호하는 '진짜 보안'은 데이터베이스 레벨의 **Row Level Security (RLS)** 가 전담합니다.
+- **보호 정책 목록 (`posts` 테이블):**
+  - **SELECT:** 누구나 읽기 가능 (`USING (true)`)
+  - **INSERT:** 인증된 사용자만 가능하며, `user_id`가 본인의 `auth.uid()`와 일치해야 함
+  - **UPDATE:** 글 작성자 본인만 가능 (`USING` & `WITH CHECK` 둘 다 본인 확인)
+  - **DELETE:** 글 작성자 본인만 가능 (`USING` 본인 확인)
+- **클라이언트 키 보안:** 프론트엔드 코드나 브라우저 환경에서는 모든 RLS를 우회할 수 있는 `service_role` 키를 절대 사용하지 않습니다.
+- **마이그레이션 관리:** RLS 스키마 및 정책 관리는 SQL Editor 직접 실행을 지양하고, 반드시 **Supabase CLI 마이그레이션 파일**로 코드로 남겨 버전 관리합니다.
+
+### 3.2. 에러 처리 및 로딩 UX 설계 원칙 (Chapter 12)
+- **로딩 상태:** 별도 `loading.tsx` 파일 대신, 각 page.tsx 안 조건부 렌더링으로 처리합니다.
+- **빈 상태(Empty State):** 데이터가 없을 때 빈 화면 대신 안내 문구를 보여줍니다.
+- **에러 상태:** 앱이 완전히 멈추는 대신 친절한 한국어 메시지를 인라인으로 표시합니다.
+- **에러 원문 분리:** Supabase/네트워크 에러 원문은 `console.error`로만 남기고, 화면에는 `lib/error-message.ts`의 `getErrorMessage()`로 변환한 메시지만 표시합니다.
+- **폼 검증:** 외부 라이브러리 없이 순수 `useState`와 Tailwind CSS만 사용합니다.
+
+#### 화면별 UX 상태 매핑
+| 화면 | 로딩 | 빈 상태 | 에러 |
+| :--- | :--- | :--- | :--- |
+| `/posts` | SSR (없음) | "등록된 게시글이 없습니다..." | 붉은 에러 블록 |
+| `/posts/new` | 인증 확인 중 텍스트 | — | 폼 상단 + 필드별 인라인 메시지 |
+| `/posts/[id]` | 로딩 텍스트/스피너 | — | 친절한 에러 메시지 |
+| `/login`, `/signup` | 버튼 비활성화 | — | `getErrorMessage()` 한국어 변환 |
 
 ---
 
@@ -63,6 +86,13 @@
 - **`Header` / `Footer`**: 글로벌 네비게이션 바 및 하단 저작권 정보.
 - **`SearchBar`**: `Input`을 활용하여 검색어(상태)를 관리하고 필터링 로직에 연결하는 컴포넌트.
 - **`PostListView`**: 서버에서 받은 초기 게시글 데이터를 상태로 관리하며, 목록을 `Card` 형태로 매핑하는 뷰 컴포넌트.
+
+### 4.3. 유틸리티 계층 (`lib/`)
+- **`lib/supabase/client.ts`**: 브라우저(Client Component)용 Supabase 클라이언트 (`createBrowserClient`)
+- **`lib/supabase/server.ts`**: 서버(Server Component / Route Handler)용 Supabase 클라이언트 (`createServerClient`, 쿠키 기반)
+- **`lib/auth.ts`**: 이메일/비밀번호 로그인·회원가입 헬퍼 함수
+- **`lib/posts.ts`**: 게시글 관련 TypeScript 타입 정의
+- **`lib/error-message.ts`**: Supabase/네트워크 에러를 사용자 친화적 한국어 메시지로 변환하는 `getErrorMessage()` 유틸 (Ch12 추가)
 
 ### 4.3. 디자인 토큰 (Design Tokens)
 `copilot-instructions.md`의 규칙을 따르는 전역 디자인 원칙입니다.

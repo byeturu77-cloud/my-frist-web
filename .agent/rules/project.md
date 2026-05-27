@@ -29,4 +29,9 @@
 - 데이터베이스 연동 시 Ch8에서 작성한 `lib/supabase/client.ts`를 활용한다.
 - 인증 상태 관리는 Ch9에서 작성한 `useAuth/AuthProvider`를 사용한다.
 - `posts` 컬럼명 등은 Ch8에서 구성한 스키마 구조를 그대로 사용한다.
-- UI 상의 수정/삭제 기능은 프론트엔드 관점(UX)에서 구현하며, 실제 데이터베이스 레벨의 권한 제어 및 보안 처리는 Chapter 11의 RLS(Row Level Security)에서 담당함을 유의한다.
+
+## 5. 보안 및 RLS (Chapter 11) 규칙
+- RLS 정책 및 데이터베이스 변경 사항은 SQL Editor 직접 실행을 지양하고, 반드시 **Supabase CLI 마이그레이션 파일**로 남긴다.
+- `posts` 테이블의 정책(Policy)은 레코드의 `user_id`와 `auth.uid()`를 기준으로 판단하게 만든다.
+- 클라이언트 UI 분기(숨김 처리 등)는 UX 향상일 뿐 보안 수단이 아님을 명심하고, 실제 보안은 RLS에 위임한다.
+- 클라이언트 단(브라우저)에서 `service_role` 키를 절대 사용하지 않는다.

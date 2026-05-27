@@ -22,11 +22,26 @@
 - [x] 글 삭제/수정: 본인이 작성한 글에만 표시되는 권한 기반 로직 처리
 
 ## Chapter 11: 보안 (Row Level Security - RLS)
-- [ ] `profiles` 테이블 RLS 정책 설정 (자신의 프로필만 수정 가능)
-- [ ] `posts` 테이블 RLS 정책 설정 (모두가 조회 가능, 작성자만 수정/삭제 가능)
-- [ ] 사용자 프로필과 게시글 연동 테스트 (FK 검증)
+- [x] `posts` RLS 마이그레이션 생성 (`supabase/migrations/...`)
+- [x] `db push`를 통한 원격 데이터베이스 적용
+- [x] 다른 계정 및 비로그인 사용자 권한 우회 테스트 (브라우저 검증)
+- [x] `service_role` 등 보안 키 노출 여부 `grep` 점검
+- [x] 빌드/배포 검증 (환경변수 폴백 점검)
 
-## Chapter 12: 배포 및 마무리
+## Chapter 12: 에러 처리 및 로딩 UX 개선
+- [x] `lib/supabase/server.ts` 생성 (Server Component용 `createServerClient`)
+- [x] `app/posts/page.tsx`에 서버 클라이언트 적용 (`lib/supabase/server` import)
+- [x] `/posts` 본문없음(빈 상태) 안내 문구 연동
+- [x] `/posts` 에러 시 빨간 에러 메시지 블록 표시
+- [x] `/posts/new` 폼 검증: 제목 2자 이상, 내용 10자 이상, 인라인 에러 메시지
+- [x] `/posts/new` 제출 중 버튼 비활성화(중복 제출 방지)
+- [x] `lib/error-message.ts` 생성 — Supabase/네트워크 에러 친절한 한국어로 변환
+- [x] `app/login/page.tsx` 에러 메시지 `getErrorMessage()` 적용
+- [x] `app/signup/page.tsx` 에러 메시지 `getErrorMessage()` 적용
+
+## Chapter 13: 배포 및 QA
 - [ ] Vercel을 통한 프로젝트 배포 (환경변수 설정 포함)
 - [ ] 배포된 환경에서 인증, CRUD, 검색 기능 전체 테스트
+- [ ] 로딩 스켈레튼, 빈 상태 문구, 에러 메시지 화면 직접 확인
+- [ ] 보안 키 노출 grep 재점검 (`service_role`, `next/router`)
 - [ ] 최종 QA 및 README.md 작성
