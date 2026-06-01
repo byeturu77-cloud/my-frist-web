@@ -43,5 +43,5 @@
 - [ ] Vercel을 통한 프로젝트 배포 (환경변수 설정 포함)
 - [ ] 배포된 환경에서 인증, CRUD, 검색 기능 전체 테스트
 - [ ] 로딩 스켈레튼, 빈 상태 문구, 에러 메시지 화면 직접 확인
-- [ ] 보안 키 노출 grep 재점검 (`service_role`, `next/router`)
+- [x] 보안 키 노출 grep 재점검 (`service_role`, `next/router`)
 - [ ] 최종 QA 및 README.md 작성

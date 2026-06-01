@@ -33,7 +33,8 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   // 보호해야 할 경로들
-  const isProtectedRoute = request.nextUrl.pathname.startsWith('/posts/new') || request.nextUrl.pathname.startsWith('/mypage');
+  const pathname = request.nextUrl.pathname;
+  const isProtectedRoute = pathname.startsWith('/posts/new') || pathname.startsWith('/mypage') || pathname.endsWith('/edit');
 
   // 보호된 경로에 미인증 사용자가 접근하려 할 경우
   if (isProtectedRoute && !user) {
