@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import LikeButton from "@/components/LikeButton";
+import CommentSection from "@/components/CommentSection";
 
 export default function PostPage({ params }: { params: Promise<{ id: string }> }) {
   // Next.js 16 App Router: params를 비동기로 추출합니다.
@@ -138,14 +140,22 @@ export default function PostPage({ params }: { params: Promise<{ id: string }> }
         </div>
       </header>
       
-      <main className="text-lg text-gray-700 leading-relaxed min-h-[30vh]">
+      <main className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed min-h-[30vh]">
         <p className="whitespace-pre-wrap">{post.content}</p>
       </main>
 
-      <footer className="mt-12 pt-8 border-t border-gray-200 flex justify-between items-center">
+      {/* 좋아요 버튼 (G2) */}
+      <div className="mt-6">
+        <LikeButton postId={id} />
+      </div>
+
+      {/* 댓글 섹션 (G1) */}
+      <CommentSection postId={id} />
+
+      <footer className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
         <Link 
           href="/posts" 
-          className="group flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium transition-colors"
+          className="group flex items-center gap-2 text-blue-600 dark:text-indigo-400 hover:text-blue-800 dark:hover:text-indigo-300 font-medium transition-colors"
         >
           <span className="transform group-hover:-translate-x-1 transition-transform">&larr;</span> 
           목록으로 돌아가기

@@ -3,6 +3,7 @@ import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { Providers } from "./providers";
 import Header from "@/components/Header";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
@@ -18,8 +19,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={cn("font-sans", geist.variable)}>
+    <html lang="ko" className={cn("font-sans", geist.variable)} suppressHydrationWarning>
       <body>
+        <Providers>
         <AuthProvider>
           <Header />
           <main className="max-w-4xl mx-auto p-6">
@@ -29,6 +31,7 @@ export default function RootLayout({
             © 2026 내 블로그
           </footer>
         </AuthProvider>
+        </Providers>
       </body>
     </html>
   );

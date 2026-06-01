@@ -12,7 +12,8 @@ export default function PostListView({ initialPosts }: { initialPosts: Post[] })
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredPosts = posts.filter(post => 
-    post.title.toLowerCase().includes(searchQuery.toLowerCase())
+    post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    post.content.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleDelete = (e: React.MouseEvent, id: string) => {
