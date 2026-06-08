@@ -50,13 +50,7 @@ export default async function PostsPage() {
         </Button>
       </div>
       
-      {posts.length === 0 ? (
-        <div className="text-center py-12 text-gray-500 bg-white rounded-xl shadow-sm border border-gray-100">
-          등록된 게시글이 없습니다. 첫 글을 작성해 보세요!
-        </div>
-      ) : (
-        <PostListView initialPosts={posts} />
-      )}
+      <PostListView initialPosts={posts} />
     </div>
   );
 }

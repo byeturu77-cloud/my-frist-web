@@ -44,7 +44,7 @@ export default function Header() {
           {mounted && (
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-full hover:bg-indigo-500 dark:hover:bg-gray-700 transition-colors"
+              className="flex items-center gap-1.5 p-2 rounded-lg hover:bg-indigo-500 dark:hover:bg-gray-700 transition-colors"
               aria-label="다크 모드 전환"
             >
               {theme === "dark" ? (
@@ -52,6 +52,7 @@ export default function Header() {
               ) : (
                 <Moon className="w-4 h-4" />
               )}
+              <span className="hidden sm:inline text-xs font-medium">{theme === "dark" ? "라이트모드" : "다크모드"}</span>
             </button>
           )}
 
@@ -61,10 +62,11 @@ export default function Header() {
             <>
               <Link
                 href="/mypage"
-                className="p-2 rounded-full hover:bg-indigo-500 dark:hover:bg-gray-700 transition-colors"
+                className="flex items-center gap-1.5 p-2 rounded-lg hover:bg-indigo-500 dark:hover:bg-gray-700 transition-colors"
                 aria-label="마이페이지"
               >
                 <User className="w-4 h-4" />
+                <span className="hidden sm:inline text-xs font-medium">마이페이지</span>
               </Link>
               <Link 
                 href="/posts/new" 
