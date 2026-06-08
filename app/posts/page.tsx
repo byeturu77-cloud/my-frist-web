@@ -12,6 +12,7 @@ export default async function PostsPage() {
       id,
       title,
       content,
+      image_url,
       created_at,
       user_id,
       profiles (
@@ -34,6 +35,7 @@ export default async function PostsPage() {
     id: post.id,
     title: post.title,
     content: post.content,
+    image_url: post.image_url,
     author: post.profiles?.username || "익명",
     date: post.created_at ? new Date(post.created_at).toISOString().split('T')[0] : "",
     user_id: post.user_id,
@@ -42,8 +44,8 @@ export default async function PostsPage() {
   return (
     <div className="py-8 max-w-6xl mx-auto px-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-        <h1 className="text-3xl font-extrabold text-gray-900">게시글 목록</h1>
-        <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 font-semibold shadow-sm text-white">
+        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">게시글 목록</h1>
+        <Button asChild size="lg" className="bg-indigo-600 hover:bg-indigo-700 font-semibold shadow-sm text-white rounded-full px-6">
           <Link href="/posts/new">
             새 글 작성
           </Link>

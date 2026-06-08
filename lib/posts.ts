@@ -5,6 +5,7 @@ export type Post = {
   author: string;
   date: string;
   user_id?: string;
+  image_url?: string;
 };
 
 export async function fetchPosts(): Promise<Post[]> {

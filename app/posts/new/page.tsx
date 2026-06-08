@@ -12,6 +12,8 @@ export default function NewPostPage() {
   
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [titleError, setTitleError] = useState('');
   const [contentError, setContentError] = useState('');
   const [submitError, setSubmitError] = useState('');
@@ -54,11 +56,32 @@ export default function NewPostPage() {
     setIsSubmitting(true);
     try {
       const supabase = createClient();
+      let imageUrl = null;
+
+      if (imageFile) {
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `${user.id}/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('images')
+          .upload(filePath, imageFile);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('images')
+          .getPublicUrl(filePath);
+
+        imageUrl = publicUrl;
+      }
+
       const { data, error } = await supabase
         .from('posts')
         .insert({
           title,
           content,
+          image_url: imageUrl,
           user_id: user.id
         })
         .select('id')
@@ -109,7 +132,7 @@ export default function NewPostPage() {
 
       <form 
         onSubmit={handleSubmit} 
-        className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sm:p-8 flex flex-col gap-6"
+        className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 dark:border-gray-700/50 p-6 sm:p-10 flex flex-col gap-6 transition-all"
       >
         {submitError && (
           <div className="p-4 bg-red-50 text-red-600 rounded-lg text-sm font-medium border border-red-100">
@@ -144,6 +167,34 @@ export default function NewPostPage() {
             <p className="text-sm text-red-500 font-medium animate-pulse">
               ⚠️ {titleError}
             </p>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label htmlFor="image" className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+            커버 이미지 (선택)
+          </label>
+          <input
+            type="file"
+            id="image"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setImageFile(file);
+                setImagePreview(URL.createObjectURL(file));
+              } else {
+                setImageFile(null);
+                setImagePreview(null);
+              }
+            }}
+            disabled={isSubmitting}
+            className="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 dark:file:bg-indigo-900/30 file:text-indigo-700 dark:file:text-indigo-300 hover:file:bg-indigo-100 dark:hover:file:bg-indigo-800/50 transition-colors cursor-pointer"
+          />
+          {imagePreview && (
+            <div className="mt-3 relative rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 h-64 w-full bg-gray-50 dark:bg-gray-800">
+              <img src={imagePreview} alt="Preview" className="object-cover w-full h-full" />
+            </div>
           )}
         </div>
 

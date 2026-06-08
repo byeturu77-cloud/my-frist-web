@@ -23,31 +23,35 @@ export default function PostListView({ initialPosts }: { initialPosts: Post[] })
       <SearchBar value={searchQuery} onChange={setSearchQuery} />
       
       {posts.length === 0 ? (
-        <div className="text-center py-12 text-gray-500 bg-white rounded-xl shadow-sm border border-gray-100">
+        <div className="text-center py-16 text-gray-500 dark:text-gray-400 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md rounded-2xl shadow-sm border border-white/20 dark:border-gray-800">
           등록된 게시글이 없습니다. 첫 글을 작성해 보세요!
         </div>
       ) : filteredPosts.length === 0 ? (
-        <div className="text-center py-12 text-gray-500 bg-white rounded-xl shadow-sm border border-gray-100">
+        <div className="text-center py-16 text-gray-500 dark:text-gray-400 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md rounded-2xl shadow-sm border border-white/20 dark:border-gray-800">
           검색 결과가 없습니다.
         </div>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {filteredPosts.map((post) => (
             <Link href={`/posts/${post.id}`} key={post.id} className="block group h-full focus:outline-none">
-              <Card className="h-full relative transition-all duration-200 hover:shadow-md hover:border-blue-400 flex flex-col overflow-hidden">
-
+              <Card className="h-full relative transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-indigo-400 dark:hover:border-indigo-500 flex flex-col overflow-hidden bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/40 dark:border-gray-700/50 rounded-2xl">
+                {post.image_url && (
+                  <div className="w-full h-48 bg-gray-100 dark:bg-gray-800 overflow-hidden shrink-0">
+                    <img src={post.image_url} alt={post.title} className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" />
+                  </div>
+                )}
                 
-                <CardHeader className="pb-3 pr-14">
-                  <CardTitle className="text-xl font-bold group-hover:text-blue-600 transition-colors line-clamp-2">
+                <CardHeader className={`pb-3 pr-4 ${post.image_url ? 'pt-5' : 'pt-6'}`}>
+                  <CardTitle className="text-xl font-extrabold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2 leading-snug">
                     {post.title}
                   </CardTitle>
-                  <CardDescription className="text-sm font-medium mt-1">
+                  <CardDescription className="text-sm font-medium mt-1.5 text-gray-500 dark:text-gray-400">
                     {post.date} · {post.author}
                   </CardDescription>
                 </CardHeader>
                 
-                <CardContent className="flex-1">
-                  <p className="text-gray-600 line-clamp-3">
+                <CardContent className="flex-1 pb-6">
+                  <p className="text-gray-600 dark:text-gray-300 line-clamp-3 leading-relaxed text-sm">
                     {post.content}
                   </p>
                 </CardContent>

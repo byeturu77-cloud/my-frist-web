@@ -29,6 +29,7 @@ export default function PostPage({ params }: { params: Promise<{ id: string }> }
             id,
             title,
             content,
+            image_url,
             created_at,
             user_id,
             profiles (
@@ -102,14 +103,20 @@ export default function PostPage({ params }: { params: Promise<{ id: string }> }
   const isAuthor = user && user.id === post.user_id;
 
   return (
-    <article className="max-w-3xl mx-auto px-4 py-12 flex flex-col gap-8">
-      <header className="border-b border-gray-200 pb-8">
-        <div className="flex justify-between items-start mb-4">
-          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight capitalize">
-            {post.title}
-          </h1>
-          {isAuthor && (
-            <div className="flex gap-2">
+    <article className="max-w-4xl mx-auto px-4 py-8 sm:py-12 flex flex-col gap-8">
+      <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 dark:border-gray-700/50 p-6 sm:p-10 md:p-12 transition-all">
+        <header className="border-b border-gray-200 dark:border-gray-800 pb-8">
+          {post.image_url && (
+            <div className="w-full h-64 sm:h-96 relative rounded-2xl overflow-hidden mb-8 shadow-lg">
+              <img src={post.image_url} alt={post.title} className="object-cover w-full h-full" />
+            </div>
+          )}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight capitalize leading-tight">
+              {post.title}
+            </h1>
+            {isAuthor && (
+              <div className="flex gap-2 shrink-0">
               <Button asChild variant="outline" size="sm">
                 <Link href={`/posts/${post.id}/edit`}>수정</Link>
               </Button>
@@ -133,26 +140,27 @@ export default function PostPage({ params }: { params: Promise<{ id: string }> }
             </time>
           </div>
           {isAuthor && (
-            <span className="text-xs text-gray-400">
-              * 실제 보안은 Ch11 RLS 정책으로 강제됩니다.
-            </span>
-          )}
-        </div>
-      </header>
-      
-      <main className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed min-h-[30vh]">
-        <p className="whitespace-pre-wrap">{post.content}</p>
-      </main>
+              <span className="text-xs text-gray-400 dark:text-gray-500 block sm:inline mt-2 sm:mt-0">
+                * 실제 보안은 Ch11 RLS 정책으로 강제됩니다.
+              </span>
+            )}
+          </div>
+        </header>
+        
+        <main className="mt-8 text-base sm:text-lg text-gray-700 dark:text-gray-300 leading-relaxed min-h-[30vh]">
+          <p className="whitespace-pre-wrap">{post.content}</p>
+        </main>
 
-      {/* 좋아요 버튼 (G2) */}
-      <div className="mt-6">
-        <LikeButton postId={id} />
+        {/* 좋아요 버튼 (G2) */}
+        <div className="mt-10">
+          <LikeButton postId={id} />
+        </div>
+
+        {/* 댓글 섹션 (G1) */}
+        <CommentSection postId={id} />
       </div>
 
-      {/* 댓글 섹션 (G1) */}
-      <CommentSection postId={id} />
-
-      <footer className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
+      <footer className="mt-4 pb-12 flex justify-between items-center">
         <Link 
           href="/posts" 
           className="group flex items-center gap-2 text-blue-600 dark:text-indigo-400 hover:text-blue-800 dark:hover:text-indigo-300 font-medium transition-colors"

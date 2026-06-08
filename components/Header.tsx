@@ -27,16 +27,16 @@ export default function Header() {
   };
 
   return (
-    <nav className="bg-indigo-600 dark:bg-gray-900 border-b border-indigo-500 dark:border-gray-700 text-white sticky top-0 z-50 shadow-md transition-colors">
+    <nav className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border-b border-white/20 dark:border-gray-800/50 sticky top-0 z-50 shadow-[0_4px_30px_rgba(0,0,0,0.05)] transition-colors">
       <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/" className="font-bold text-xl tracking-tight hover:text-indigo-100 transition-colors">
+        <Link href="/" className="font-bold text-xl tracking-tight text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors">
           내 블로그
         </Link>
-        <div className="flex items-center space-x-2 sm:space-x-4 text-sm font-medium text-indigo-100 dark:text-gray-300">
-          <Link href="/" className="hidden sm:inline hover:text-white transition-colors">
+        <div className="flex items-center space-x-2 sm:space-x-4 text-sm font-medium text-gray-600 dark:text-gray-300">
+          <Link href="/" className="hidden sm:inline hover:text-indigo-600 dark:hover:text-white transition-colors">
             홈
           </Link>
-          <Link href="/posts" className="hover:text-white transition-colors">
+          <Link href="/posts" className="hover:text-indigo-600 dark:hover:text-white transition-colors">
             블로그
           </Link>
 
@@ -44,7 +44,7 @@ export default function Header() {
           {mounted && (
             <button
               onClick={toggleTheme}
-              className="flex items-center gap-1.5 p-2 rounded-lg hover:bg-indigo-500 dark:hover:bg-gray-700 transition-colors"
+              className="flex items-center gap-1.5 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300 transition-colors"
               aria-label="다크 모드 전환"
             >
               {theme === "dark" ? (
@@ -62,7 +62,7 @@ export default function Header() {
             <>
               <Link
                 href="/mypage"
-                className="flex items-center gap-1.5 p-2 rounded-lg hover:bg-indigo-500 dark:hover:bg-gray-700 transition-colors"
+                className="flex items-center gap-1.5 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300 transition-colors"
                 aria-label="마이페이지"
               >
                 <User className="w-4 h-4" />
@@ -70,25 +70,25 @@ export default function Header() {
               </Link>
               <Link 
                 href="/posts/new" 
-                className="bg-white text-indigo-600 dark:bg-indigo-500 dark:text-white px-3 py-2 sm:px-4 sm:py-2 rounded-full hover:bg-indigo-50 dark:hover:bg-indigo-400 transition shadow-sm font-semibold text-xs sm:text-sm"
+                className="bg-indigo-600 text-white dark:bg-indigo-500 px-3 py-2 sm:px-4 sm:py-2 rounded-full hover:bg-indigo-700 dark:hover:bg-indigo-400 transition shadow-sm font-semibold text-xs sm:text-sm"
               >
                 새 글 쓰기
               </Link>
               <button 
                 onClick={handleSignOut}
-                className="hover:text-white transition-colors"
+                className="hover:text-indigo-600 dark:hover:text-white transition-colors text-gray-600 dark:text-gray-300"
               >
                 로그아웃
               </button>
             </>
           ) : (
             <>
-              <Link href="/login" className="hover:text-white transition-colors">
+              <Link href="/login" className="hover:text-indigo-600 dark:hover:text-white transition-colors text-gray-600 dark:text-gray-300">
                 로그인
               </Link>
               <Link 
                 href="/signup" 
-                className="bg-white text-indigo-600 dark:bg-indigo-500 dark:text-white px-3 py-2 sm:px-4 sm:py-2 rounded-full hover:bg-indigo-50 dark:hover:bg-indigo-400 transition shadow-sm font-semibold text-xs sm:text-sm"
+                className="bg-indigo-600 text-white dark:bg-indigo-500 px-3 py-2 sm:px-4 sm:py-2 rounded-full hover:bg-indigo-700 dark:hover:bg-indigo-400 transition shadow-sm font-semibold text-xs sm:text-sm"
               >
                 회원가입
               </Link>
