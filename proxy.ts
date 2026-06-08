@@ -1,6 +1,7 @@
 import { updateSession } from '@/lib/supabase/middleware'
+import { type NextRequest } from 'next/server'
 
-export async function middleware(request: Request) {
+export async function proxy(request: NextRequest) {
   // updateSession 내부에서 세션을 확인하고 리다이렉트 로직을 처리합니다.
   return await updateSession(request)
 }

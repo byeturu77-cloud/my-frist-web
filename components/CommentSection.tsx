@@ -46,7 +46,7 @@ export default function CommentSection({ postId }: CommentSectionProps) {
       .eq("post_id", postId)
       .order("created_at", { ascending: true });
 
-    setComments((data as Comment[]) || []);
+    setComments((data as unknown as Comment[]) || []);
     setLoading(false);
   };
 
