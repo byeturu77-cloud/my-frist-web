@@ -1,0 +1,19 @@
+import { updateSession } from '@/lib/supabase/middleware'
+
+export async function middleware(request: Request) {
+  // updateSession 내부에서 세션을 확인하고 리다이렉트 로직을 처리합니다.
+  return await updateSession(request)
+}
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * Feel free to modify this pattern to include more paths.
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
+}

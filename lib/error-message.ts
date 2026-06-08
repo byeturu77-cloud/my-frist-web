@@ -25,6 +25,10 @@ export function getErrorMessage(error: any): string {
   if (lowerMsg.includes('invalid login credentials')) {
     return "이메일 또는 비밀번호가 일치하지 않습니다.";
   }
+  
+  if (lowerMsg.includes('user already registered')) {
+    return "이미 가입된 이메일입니다. 로그인을 진행해주세요.";
+  }
 
   return "일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
 }
